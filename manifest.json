@@ -1,0 +1,68 @@
+{
+  "manifest_version": 3,
+  "name": "Bypass Paywalls Clean",
+  "version": "3.8.8.0",
+  "description": "Bypass Paywalls of news sites",
+  "author": "magnolia1234",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "cookies",
+    "webRequest",
+    "webRequestBlocking",
+    "declarativeNetRequest"
+  ],
+  "host_permissions": [
+    "*://*.lefigaro.fr/*",
+    "*://*.archive.is/*",
+    "*://*.archive.today/*",
+    "*://*.12ft.io/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.lefigaro.fr/*"
+      ],
+      "js": [
+        "sites.js",
+        "contentScript.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Bypass Paywalls Clean",
+    "default_icon": {
+      "16": "icons/bypass-16.png",
+      "32": "icons/bypass-32.png",
+      "48": "icons/bypass-48.png",
+      "128": "icons/bypass-128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/bypass-16.png",
+    "32": "icons/bypass-32.png",
+    "48": "icons/bypass-48.png",
+    "128": "icons/bypass-128.png"
+  },
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "bypass_rules",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["contentScript_once.js"],
+      "matches": ["*://*.lefigaro.fr/*"]
+    }
+  ]
+}
