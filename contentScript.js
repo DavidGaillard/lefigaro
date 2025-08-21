@@ -245,10 +245,22 @@ const observer = new MutationObserver((mutations) => {
   });
 });
 
-// Start observing
-observer.observe(document.body, {
-  childList: true,
-  subtree: true
-});
+// Start observing (with safety check)
+if (document.body) {
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+} else {
+  // Wait for body to be available
+  document.addEventListener('DOMContentLoaded', () => {
+    if (document.body) {
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    }
+  });
+}
 
 console.log('Bypass Paywalls Clean: Content script loaded for Le Figaro');
