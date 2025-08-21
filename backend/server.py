@@ -211,7 +211,13 @@ async def get_supported_sites():
     """Get list of all supported sites"""
     try:
         sites = await db.site_configs.find({}).to_list(100)
-        return sites
+        # Convert MongoDB documents to JSON-serializable format
+        serializable_sites = []
+        for site in sites:
+            if '_id' in site:
+                del site['_id']  # Remove MongoDB ObjectId
+            serializable_sites.append(site)
+        return serializable_sites
     except Exception as e:
         logging.error(f"Failed to get supported sites: {e}")
         raise HTTPException(status_code=500, detail="Failed to get supported sites")
