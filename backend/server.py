@@ -143,6 +143,9 @@ async def get_site_config(domain: str):
     try:
         config = await db.site_configs.find_one({"domain": domain})
         if config:
+            # Remove MongoDB ObjectId for JSON serialization
+            if '_id' in config:
+                del config['_id']
             return config
         else:
             # Return default config for lefigaro.fr or None for unsupported sites
