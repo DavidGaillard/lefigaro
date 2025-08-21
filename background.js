@@ -31,54 +31,6 @@ function initializeExtension() {
   });
 }
 
-// Handle web requests
-chrome.webRequest.onBeforeSendHeaders.addListener(
-  function(details) {
-    const url = new URL(details.url);
-    const domain = url.hostname.replace(/^www\./, '');
-    
-    if (siteConfigs[domain]) {
-      const config = siteConfigs[domain];
-      let headersModified = false;
-      
-      // Modify headers for bypass
-      details.requestHeaders = details.requestHeaders.map(header => {
-        // Change User-Agent
-        if (header.name.toLowerCase() === 'user-agent' && config.useragent) {
-          header.value = config.useragent;
-          headersModified = true;
-        }
-        
-        // Change Referer
-        if (header.name.toLowerCase() === 'referer' && config.referer) {
-          header.value = config.referer;
-          headersModified = true;
-        }
-        
-        return header;
-      });
-      
-      // Add custom headers if needed
-      if (config.referer && !details.requestHeaders.find(h => h.name.toLowerCase() === 'referer')) {
-        details.requestHeaders.push({
-          name: 'Referer',
-          value: config.referer
-        });
-        headersModified = true;
-      }
-      
-      if (headersModified) {
-        console.log(`Modified headers for ${domain}`);
-        logToBackend('header_modified', domain, details.url);
-      }
-    }
-    
-    return { requestHeaders: details.requestHeaders };
-  },
-  { urls: ["*://*.lefigaro.fr/*"] },
-  ["requestHeaders", "blocking"]
-);
-
 // Clear cookies for paywall sites
 function clearSiteCookies(domain) {
   const config = siteConfigs[domain];
